@@ -1,19 +1,30 @@
 {
-  "name": "atos",
+  "name": "@timotheej/dsfr-toolkit",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "directories": {
-    "doc": "docs"
+  "description": "Toolkit DSFR pour scaffolder des projets avec Claude Code — Système de Design de l'État",
+  "bin": {
+    "dsfr-toolkit": "bin/cli.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node tests/create.test.js"
   },
-  "keywords": [],
-  "author": "",
+  "files": [
+    "bin/",
+    "lib/",
+    "docs/",
+    "templates/"
+  ],
+  "keywords": [
+    "dsfr",
+    "design-system",
+    "gouvernement",
+    "france",
+    "claude-code",
+    "toolkit"
+  ],
+  "author": "Atos",
   "license": "ISC",
-  "type": "commonjs",
-  "dependencies": {
-    "@gouvfr/dsfr": "^1.14.3"
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
