@@ -1,6 +1,27 @@
 # Indicateur d'étapes (Stepper)
 
-Indicateur de progression pour processus multi-étapes. Maximum 8 étapes, minimum 2.
+Indicateur de progression **réservé aux formulaires et démarches multi-étapes**. Il permet à l'utilisateur de se situer dans un processus linéaire divisé en plusieurs étapes. Maximum 8 étapes, minimum 2.
+
+## Quand l'utiliser
+
+- Un **processus linéaire** (formulaire, démarche en ligne) est découpé en étapes logiques
+- L'utilisateur **fournit ou valide des informations** à chaque étape (saisie, choix, vérification, confirmation)
+- L'utilisateur doit savoir où il en est dans le parcours
+
+Le stepper s'utilise aussi bien dans un formulaire HTML classique que dans une SPA (React, Vue, Angular...) où les étapes sont gérées via le state — ce qui compte c'est la nature du parcours, pas la présence d'une balise `<form>`.
+
+## Quand NE PAS l'utiliser
+
+| Besoin | Composant adapté |
+|--------|-----------------|
+| Navigation entre pages de contenu | Fil d'Ariane (`fr-breadcrumb`) |
+| Sommaire d'une page longue | Sommaire (`fr-summary`) |
+| Consultation d'information sans action utilisateur | Navigation (`fr-nav`) ou fil d'Ariane |
+| Timeline / historique d'événements | Liste chronologique custom |
+| Onboarding / tutoriel de découverte | Pagination ou navigation |
+| Progression de téléchargement / traitement | Barre de progression native `<progress>` |
+
+**En résumé** : s'il n'y a pas de processus linéaire où l'utilisateur fournit ou valide des informations étape par étape, ne pas utiliser le stepper.
 
 ## Classes CSS
 
@@ -114,8 +135,14 @@ details.innerHTML = '<span class="fr-text--bold">Étape suivante :</span> Docume
 
 ## Règles d'utilisation
 
-- Ne pas répéter le numéro d'étape dans le titre (le compteur le fait déjà)
+- **Usage réservé aux processus linéaires** (formulaire ou démarche) où l'utilisateur fournit/valide des informations
+- Le composant n'est **pas interactif** : l'utilisateur ne clique pas sur les étapes, il navigue via les boutons Précédent/Suivant
+- Positionner le stepper **en haut de page** pour qu'il soit immédiatement visible
+- Ne pas répéter le numéro d'étape dans le titre (le compteur `fr-stepper__state` le fait déjà)
+- Rédiger des titres d'étapes **clairs, explicites et uniques** — l'utilisateur doit comprendre le cheminement
 - Le composant n'est PAS personnalisable (pas de variantes de couleur ou de taille)
-- Prévoir une page d'introduction avant l'étape 1 (sans stepper)
-- Terminer par une page de confirmation
-- Boutons alignés à droite (`fr-btns-group--right`) dans les formulaires multi-étapes
+- Prévoir une page d'introduction avant l'étape 1 (sans stepper) qui présente le processus et les étapes à venir
+- Terminer par une page de confirmation (avec le stepper à la dernière étape, sans titre d'étape suivante)
+- Boutons alignés à droite (`fr-btns-group--right`)
+- Chaque étape = un regroupement logique (ex: identité, coordonnées, documents, vérification)
+- Ne pas dépasser 8 étapes — plus le parcours est long, plus le risque d'abandon est élevé

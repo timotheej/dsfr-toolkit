@@ -62,12 +62,17 @@ Cette phase ne se joue qu'une seule fois, au tout début du projet.
 
 1. **Lis `PROJET.md`** pour comprendre le contexte métier
 2. **Lis les fichiers dans `specs/`** s'ils existent (cahier des charges, wireframes, parcours)
-3. **Lis les pages existantes dans `pages/`** pour assurer la cohérence
+3. **Lis les pages existantes dans `pages/`** pour assurer la cohérence — en relevant spécifiquement :
+   - Le **layout** utilisé (col-12, col-3/col-9, col-8, etc.)
+   - Les **espacements structurels** entre header, sections, footer
+   - Le **pattern titre/chapô** et la structure des sections
+   - Les composants communs (header, footer, breadcrumb) pour réutiliser le même markup
 4. Croise ces informations avec la demande de l'utilisateur
 5. Si la demande est ambiguë, **pose des questions** avant de continuer :
    - Quel contenu afficher ?
    - Quelles actions l'utilisateur peut-il réaliser ?
    - Quel est l'état précédent et suivant dans le parcours ?
+   - Ce nouvel écran fait-il partie d'un parcours existant ? (si oui, il **doit** reprendre le même layout et les mêmes espacements)
 
 ---
 
@@ -114,6 +119,21 @@ Une fois le wireframe validé :
    - Ouvre le fichier `.md` correspondant dans `node_modules/@timotheej/dsfr-toolkit/docs/`
    - Note les classes CSS, les attributs ARIA, les variantes
 3. Choisis les variantes adaptées au contexte (taille, couleur d'accent, état)
+
+---
+
+### PHASE 3b — COMPOSITION DE PAGE (automatique)
+
+Avant de coder, **lis obligatoirement** les règles de composition de page :
+
+1. **Lis `node_modules/@timotheej/dsfr-toolkit/docs/fondations/espacement.md`** — section "Règles de composition de page"
+2. **Applique systématiquement** ces espacements structurels :
+   - `2w` (16px) entre un titre et son texte associé (chapô, description)
+   - `3w` (24px) entre un bloc titre+description et sa zone de contenu
+   - `4w` (32px) entre sous-sections d'une même section
+   - `5w` (40px) entre sections majeures, entre breadcrumb et titre, entre dernière section et retour en haut
+   - `7w` (56px) entre le dernier contenu et le pied de page
+3. **Vérifie la cohérence** avec les pages existantes du même parcours — mêmes espacements, même layout
 
 ---
 
@@ -177,6 +197,15 @@ Après avoir généré le code, vérifie **automatiquement** :
    - [ ] Header avec bloc-marque présent
    - [ ] Footer avec liens légaux présent
    - [ ] `role="main"` sur le main
+
+5. **Composition et espacement** :
+   - [ ] Espacement titre → description/chapô = `fr-mt-2w` (16px)
+   - [ ] Espacement bloc titre+description → contenu = `fr-mt-3w` (24px)
+   - [ ] Espacement entre sous-sections = `fr-mt-4w` (32px)
+   - [ ] Espacement entre sections majeures = `fr-mt-5w` (40px)
+   - [ ] Espacement dernier contenu → footer = `fr-mt-7w` (56px)
+   - [ ] Layout cohérent avec les autres pages du même parcours
+   - [ ] Même structure header/breadcrumb/footer que les pages existantes
 
 Si un point n'est pas conforme, **corrige immédiatement** avant de présenter le résultat.
 Enfin, **propose les prochaines pages/écrans** à créer selon le contexte du projet.

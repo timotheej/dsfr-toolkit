@@ -41,7 +41,7 @@ fr-mt-md-4v     /* margin-top: 16px à partir de MD */
 fr-pb-lg-8v     /* padding-bottom: 32px à partir de LG */
 ```
 
-## Échelle complète
+## Échelle complète (unité v)
 
 | Token | Pixels |
 |-------|--------|
@@ -64,3 +64,17 @@ fr-pb-lg-8v     /* padding-bottom: 32px à partir de LG */
 | `24v` | 96 |
 | `28v` | 112 |
 | `32v` | 128 |
+
+## Unité W (espacement structurel de page)
+
+L'unité `w` (1w = 8px = 2v) est dédiée aux **espacements entre blocs structurels** de la page. Utiliser `w` pour la composition de page, `v` pour les espacements internes aux composants.
+
+| Token W | Équivalent v | Pixels | Usage type |
+|---------|-------------|--------|------------|
+| `2w` | `4v` | 16 | Titre → description |
+| `3w` | `6v` | 24 | Bloc titre+description → zone de contenu |
+| `4w` | `8v` | 32 | Entre sous-sections |
+| `5w` | `10v` | 40 | Entre sections majeures |
+| `7w` | `14v` | 56 | Dernier contenu → footer |
+
+Voir les règles complètes dans `docs/fondations/espacement.md` (section "Règles de composition de page").
