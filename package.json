@@ -1,6 +1,6 @@
 {
   "name": "@timotheej/dsfr-toolkit",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Toolkit DSFR pour scaffolder des projets avec Claude Code — Système de Design de l'État",
   "bin": {
     "dsfr-toolkit": "bin/cli.js"
