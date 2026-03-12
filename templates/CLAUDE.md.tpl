@@ -1,8 +1,23 @@
 # Instructions projet — {{PROJECT_NAME}} (DSFR)
 
-## RÈGLE ABSOLUE : DSFR uniquement
+## RÈGLE FONDAMENTALE : DSFR d'abord
 
-**Pour toute modification ou création dans ce projet, utiliser STRICTEMENT les composants du DSFR.** Aucun CSS custom, aucun composant maison ne doit remplacer un composant existant du DSFR.
+**Pour toute modification ou création dans ce projet, la priorité est au DSFR.** Appliquer dans cet ordre :
+
+1. **Composant DSFR** — si un composant DSFR répond au besoin, l'utiliser tel quel (ne jamais le remplacer par du custom)
+2. **Tokens DSFR** — si aucun composant DSFR n'existe (graphiques, KPI, widgets métier…), créer un composant custom en utilisant les tokens DSFR (couleurs, typographie, espacements, grille)
+3. **CSS custom** — uniquement pour ce que les tokens ne couvrent pas, dans un fichier `assets/css/` séparé, jamais en surcharge du DSFR
+
+### Pages de contenu vs pages applicatives
+
+| | Pages de contenu | Pages applicatives (dashboard, portail) |
+|---|---|---|
+| **Structure** | 100% DSFR (header, footer, grille, breadcrumb) | 100% DSFR (header, footer, grille, breadcrumb) |
+| **Zone de contenu** | Composants DSFR exclusivement | Composants DSFR + composants custom avec tokens DSFR |
+| **Layout** | Grille DSFR standard (col-12, col-3/9…) | Grille DSFR, layout custom autorisé dans les zones de contenu |
+| **CSS custom** | Non | Oui, dans `assets/css/`, avec tokens DSFR |
+
+**Ce qui ne change jamais** quel que soit le type de page : header, footer, breadcrumb, couleurs, typographie et espacements suivent le DSFR.
 
 ---
 
@@ -102,7 +117,7 @@ Avant de coder, propose un **wireframe textuel** de la page :
 ```
 
 Pour chaque zone, indique :
-- Le composant DSFR qui sera utilisé
+- Le composant DSFR qui sera utilisé, ou **[CUSTOM]** si aucun composant DSFR ne convient
 - Le contenu prévu
 - Les interactions (si applicable)
 
@@ -110,15 +125,15 @@ Pour chaque zone, indique :
 
 ---
 
-### PHASE 3 — CIBLAGE DES COMPOSANTS DSFR (automatique)
+### PHASE 3 — CIBLAGE DES COMPOSANTS (automatique)
 
 Une fois le wireframe validé :
 
-1. **Identifie chaque composant DSFR** nécessaire dans la table de référence ci-dessous
-2. **Lis la documentation de chaque composant** pour connaître la structure HTML exacte :
-   - Ouvre le fichier `.md` correspondant dans `node_modules/@timotheej/dsfr-toolkit/docs/`
-   - Note les classes CSS, les attributs ARIA, les variantes
-3. Choisis les variantes adaptées au contexte (taille, couleur d'accent, état)
+1. **Pour chaque zone du wireframe**, détermine si un composant DSFR existe :
+   - **Si oui** → lis sa documentation dans `node_modules/@timotheej/dsfr-toolkit/docs/` (structure HTML, classes CSS, attributs ARIA, variantes)
+   - **Si non (marqué [CUSTOM])** → le composant sera créé avec les tokens DSFR (couleurs, typographie, espacements, grille). Note les tokens nécessaires.
+2. Choisis les variantes adaptées au contexte (taille, couleur d'accent, état)
+3. **Pour les pages applicatives** (dashboard, portail) : identifier explicitement les zones DSFR vs custom, et s'assurer que les composants custom utilisent bien les tokens DSFR pour rester visuellement cohérents
 
 ---
 
@@ -163,7 +178,15 @@ Crée le fichier HTML dans `pages/` en respectant ces règles :
 
 3. **Grille** : toujours `fr-container > fr-grid-row > fr-col-*`
 
-4. **Formulaires** :
+4. **Composants custom** (pages applicatives uniquement) :
+   - CSS custom dans `assets/css/` — jamais en surcharge des classes `fr-*`
+   - Utiliser les variables CSS du DSFR : `var(--text-default-grey)`, `var(--background-default-grey)`, `var(--border-default-grey)`, etc.
+   - Respecter la typographie Marianne et les tailles `fr-text--*` / `fr-h*`
+   - Respecter les espacements DSFR (tokens `v` et `w`)
+   - Préfixer les classes custom pour les distinguer (ex: `app-*`, `dashboard-*`)
+   - Le dark mode doit fonctionner : utiliser les tokens couleur DSFR, jamais de couleurs en dur
+
+5. **Formulaires** :
    - Une seule colonne
    - Labels au-dessus des inputs
    - Champs obligatoires par défaut, optionnels marqués "(optionnel)"
@@ -176,10 +199,12 @@ Crée le fichier HTML dans `pages/` en respectant ces règles :
 Après avoir généré le code, vérifie **automatiquement** :
 
 1. **Conformité DSFR** :
-   - [ ] Toutes les classes utilisent le préfixe `fr-`
-   - [ ] Aucun CSS custom ne remplace un composant DSFR
+   - [ ] Aucun CSS custom ne remplace un composant DSFR existant
    - [ ] La grille respecte `fr-container > fr-grid-row > fr-col-*`
    - [ ] Les polices sont Marianne/Spectral uniquement
+   - [ ] Les composants custom (si présents) utilisent les tokens DSFR (couleurs, typo, espacements)
+   - [ ] Les classes custom sont préfixées et séparées des classes `fr-*`
+   - [ ] Le CSS custom est dans `assets/css/`, pas en inline ni en surcharge du DSFR
 
 2. **Accessibilité RGAA** :
    - [ ] Skiplinks présents
