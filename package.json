@@ -1,7 +1,7 @@
 {
   "name": "@timotheej/dsfr-toolkit",
-  "version": "1.2.1",
-  "description": "Toolkit DSFR pour scaffolder des projets avec Claude Code — Système de Design de l'État",
+  "version": "2.1.0",
+  "description": "Toolkit DSFR React pour scaffolder des projets avec Claude Code — Système de Design de l'État",
   "bin": {
     "dsfr-toolkit": "bin/cli.js"
   },
@@ -11,6 +11,7 @@
   "files": [
     "bin/",
     "lib/",
+    "agents/",
     "docs/",
     "templates/"
   ],
@@ -20,7 +21,9 @@
     "gouvernement",
     "france",
     "claude-code",
-    "toolkit"
+    "toolkit",
+    "react",
+    "vite"
   ],
   "author": "Atos",
   "license": "ISC",

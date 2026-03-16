@@ -56,7 +56,7 @@
 
 ## Charte graphique / Contraintes
 
-- **Logo opérateur** : (placer dans `assets/img/`)
+- **Logo opérateur** : (placer dans `public/`)
 - **Couleurs d'accent DSFR** : (ex: green-emeraude, blue-ecume...)
 - **Contraintes particulières** :
 

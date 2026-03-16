@@ -1,265 +1,299 @@
-# Instructions projet — {{PROJECT_NAME}} (DSFR)
+# Instructions projet — {{PROJECT_NAME}} (DSFR React)
 
-## RÈGLE FONDAMENTALE : DSFR d'abord
+## REGLE FONDAMENTALE : DSFR d'abord
 
-**Pour toute modification ou création dans ce projet, la priorité est au DSFR.** Appliquer dans cet ordre :
+**Pour toute modification ou creation dans ce projet, la priorite est au DSFR.** Appliquer dans cet ordre :
 
-1. **Composant DSFR** — si un composant DSFR répond au besoin, l'utiliser tel quel (ne jamais le remplacer par du custom)
-2. **Tokens DSFR** — si aucun composant DSFR n'existe (graphiques, KPI, widgets métier…), créer un composant custom en utilisant les tokens DSFR (couleurs, typographie, espacements, grille)
-3. **CSS custom** — uniquement pour ce que les tokens ne couvrent pas, dans un fichier `assets/css/` séparé, jamais en surcharge du DSFR
+1. **Composant react-dsfr** — si un composant `@codegouvfr/react-dsfr` repond au besoin, l'utiliser mais pousser les variantes (couleurs d'accent, tailles, icones)
+2. **Composant custom + tokens DSFR** — si aucun composant react-dsfr n'existe (graphiques, KPI, widgets metier, timeline...), creer un composant React custom qui RESPIRE le DSFR : tokens couleur, typo Marianne, espacements DSFR, ombres DSFR
+3. **CSS custom** — uniquement pour ce que les tokens ne couvrent pas, dans un fichier `.css` importe par le composant, jamais en surcharge du DSFR
+
+### Le DSFR est un cadre, pas une prison
+
+Le DSFR offre un vocabulaire visuel riche. Il ne s'agit pas de poser des blocs gris par defaut. Utiliser :
+- Les **couleurs d'accent** (blue-france, green-emeraude, purple-glycine, etc.) pour creer du rythme visuel
+- Les **variantes de composants** (tailles, icones, severity) pour enrichir l'interface
+- Les **composants custom coherents DSFR** pour les besoins metier (KPI cards, timelines, status indicators, bannieres colorees)
 
 ### Pages de contenu vs pages applicatives
 
 | | Pages de contenu | Pages applicatives (dashboard, portail) |
 |---|---|---|
-| **Structure** | 100% DSFR (header, footer, grille, breadcrumb) | 100% DSFR (header, footer, grille, breadcrumb) |
-| **Zone de contenu** | Composants DSFR exclusivement | Composants DSFR + composants custom avec tokens DSFR |
-| **Layout** | Grille DSFR standard (col-12, col-3/9…) | Grille DSFR, layout custom autorisé dans les zones de contenu |
-| **CSS custom** | Non | Oui, dans `assets/css/`, avec tokens DSFR |
-
-**Ce qui ne change jamais** quel que soit le type de page : header, footer, breadcrumb, couleurs, typographie et espacements suivent le DSFR.
+| **Structure** | 100% DSFR (Header, Footer, grille, Breadcrumb) | 100% DSFR (Header, Footer, grille, Breadcrumb) |
+| **Zone de contenu** | Composants react-dsfr exclusivement | Composants react-dsfr + composants custom avec tokens DSFR |
+| **Layout** | Grille DSFR standard (fr-col-12, fr-col-3/fr-col-9...) | Grille DSFR, layout custom autorise dans les zones de contenu |
+| **CSS custom** | Non | Oui, dans un fichier `.css` importe, avec tokens DSFR |
 
 ---
 
 ## Stack technique
 
-- HTML/CSS/JS vanilla
-- DSFR v1.14.3 (`@gouvfr/dsfr`)
-- Pas de framework JS (vanilla uniquement)
-- CSS/JS du DSFR chargés depuis `node_modules/@gouvfr/dsfr/dist/`
+- React 18 + TypeScript
+- Vite (dev server + build)
+- `@codegouvfr/react-dsfr` (wrapper React officiel du DSFR)
+- React Router 6 (navigation SPA, layout partage)
 
 ## Structure du projet
 
 ```
-├── index.html                  # Page d'accueil
-├── pages/                      # Pages/écrans du site
-├── assets/                     # Ressources
-│   ├── css/                    # CSS custom (si nécessaire)
-│   ├── js/                     # JS custom
-│   └── img/                    # Images, logos opérateur
-├── specs/                      # Spécifications fonctionnelles
-├── PROJET.md                   # Contexte métier du projet
-├── CLAUDE.md                   # Ce fichier
+├── index.html                  # Point d'entree Vite (CSS/favicons react-dsfr)
+├── src/
+│   ├── main.tsx               # Initialisation React + DSFR + BrowserRouter
+│   ├── App.tsx                # Routes React Router
+│   ├── Layout.tsx             # Header + Footer DSFR partages (Outlet)
+│   ├── pages/                 # Pages/ecrans (composants React)
+│   │   └── Accueil.tsx        # Page d'accueil
+│   └── components/            # Composants reutilisables (custom)
+├── specs/                     # Specifications fonctionnelles
+├── PROJET.md                  # Contexte metier du projet
+├── CLAUDE.md                  # Ce fichier
 └── node_modules/
-    ├── @gouvfr/dsfr/           # Package DSFR (CSS/JS)
-    └── @timotheej/dsfr-toolkit/     # Toolkit (documentation)
-        └── docs/               # Doc DSFR complète
+    ├── @codegouvfr/react-dsfr/    # Composants React DSFR
+    └── @timotheej/dsfr-toolkit/
+        ├── agents/            # Prompts des agents specialises (UX, UI, Review)
+        └── docs/              # Doc DSFR complete (fondations, composants, modeles)
 ```
 
 ---
 
-## WORKFLOW AUTOMATIQUE — À suivre pour TOUTE demande
+## WORKFLOW AUTOMATIQUE — Architecture multi-agents
 
-Quand l'utilisateur te demande de créer ou modifier un écran, suis **automatiquement** ces phases dans l'ordre. Ne saute aucune phase. N'attends pas qu'on te dise de lire les fichiers — fais-le systématiquement.
+Quand l'utilisateur te demande de creer ou modifier un ecran, tu orchestes **4 agents specialises** dans l'ordre. Ne saute aucune phase. Ce workflow garantit une qualite UI/UX professionnelle.
 
 ---
 
 ### PHASE 0 — INITIALISATION DU PROJET (si PROJET.md est vide)
 
-Si le fichier `PROJET.md` n'est pas encore rempli (contient encore les placeholders), **lance un interview structuré** :
+Si le fichier `PROJET.md` n'est pas encore rempli (contient encore les placeholders), **lance un interview structure** :
 
-1. Demande à l'utilisateur de décrire le projet en quelques phrases (client, objectif, utilisateurs)
-2. Pose des questions de clarification si nécessaire :
+1. Demande a l'utilisateur de decrire le projet en quelques phrases (client, objectif, utilisateurs)
+2. Pose des questions de clarification si necessaire :
    - Qui sont les utilisateurs cibles ?
    - Quels sont les parcours principaux ?
-   - Y a-t-il des contraintes spécifiques (logo opérateur, charte, etc.) ?
-3. **Remplis toi-même le fichier `PROJET.md`** avec les informations collectées
-4. Propose la liste des pages/écrans à créer
+   - Y a-t-il des contraintes specifiques (logo operateur, charte, etc.) ?
+3. **Remplis toi-meme le fichier `PROJET.md`** avec les informations collectees
+4. Propose la liste des pages/ecrans a creer
 5. Demande validation avant de continuer
 
-Cette phase ne se joue qu'une seule fois, au tout début du projet.
+Cette phase ne se joue qu'une seule fois, au tout debut du projet.
 
 ---
 
-### PHASE 1 — ANALYSE DU BESOIN (automatique)
+### PHASE 1 — UX RESEARCH (sub-agent specialise)
 
-À chaque demande de création/modification d'écran :
+**Objectif** : Produire un wireframe detaille avec rationale UX pour chaque decision de placement.
 
-1. **Lis `PROJET.md`** pour comprendre le contexte métier
-2. **Lis les fichiers dans `specs/`** s'ils existent (cahier des charges, wireframes, parcours)
-3. **Lis les pages existantes dans `pages/`** pour assurer la cohérence — en relevant spécifiquement :
-   - Le **layout** utilisé (col-12, col-3/col-9, col-8, etc.)
-   - Les **espacements structurels** entre header, sections, footer
-   - Le **pattern titre/chapô** et la structure des sections
-   - Les composants communs (header, footer, breadcrumb) pour réutiliser le même markup
-4. Croise ces informations avec la demande de l'utilisateur
-5. Si la demande est ambiguë, **pose des questions** avant de continuer :
-   - Quel contenu afficher ?
-   - Quelles actions l'utilisateur peut-il réaliser ?
-   - Quel est l'état précédent et suivant dans le parcours ?
-   - Ce nouvel écran fait-il partie d'un parcours existant ? (si oui, il **doit** reprendre le même layout et les mêmes espacements)
-
----
-
-### PHASE 2 — WIREFRAME TEXTUEL (attendre validation)
-
-Avant de coder, propose un **wireframe textuel** de la page :
+**Execution** : Utilise l'outil **Task** pour spawner un agent UX specialise :
 
 ```
-┌─────────────────────────────────────────┐
-│  HEADER (bloc-marque + nom service)     │
-├─────────────────────────────────────────┤
-│  BREADCRUMB : Accueil > Rubrique > Page │
-├─────────────────────────────────────────┤
-│                                         │
-│  TITRE DE LA PAGE (h1)                  │
-│  Texte introductif                      │
-│                                         │
-│  ┌──────────┐ ┌──────────┐ ┌─────────┐ │
-│  │  CARTE 1 │ │  CARTE 2 │ │ CARTE 3 │ │
-│  └──────────┘ └──────────┘ └─────────┘ │
-│                                         │
-│  [Bouton primaire] [Bouton secondaire]  │
-│                                         │
-├─────────────────────────────────────────┤
-│  FOOTER                                │
-└─────────────────────────────────────────┘
+Outil : Task
+subagent_type : "general-purpose"
+prompt :
+  "Lis et suis les instructions dans node_modules/@timotheej/dsfr-toolkit/agents/ux-researcher.md
+
+   CONTEXTE PROJET :
+   - Lis le fichier PROJET.md pour le contexte metier
+   - Lis les fichiers dans specs/ s'ils existent
+   - Lis les pages existantes dans src/pages/ pour la coherence
+   - Lis src/App.tsx pour les routes existantes
+
+   DEMANDE UTILISATEUR :
+   [Copie ici la demande exacte de l'utilisateur]
+
+   Produis un wireframe detaille avec rationale UX pour chaque zone."
 ```
 
-Pour chaque zone, indique :
-- Le composant DSFR qui sera utilisé, ou **[CUSTOM]** si aucun composant DSFR ne convient
-- Le contenu prévu
-- Les interactions (si applicable)
-
-**Attends la validation de l'utilisateur avant de passer à la phase suivante.**
+Une fois le wireframe recu du sub-agent :
+1. **Presente le wireframe a l'utilisateur** avec les rationales UX
+2. **Attends la validation** avant de passer a la phase suivante
+3. Si l'utilisateur demande des modifications, relance le sub-agent UX avec les retours
 
 ---
 
-### PHASE 3 — CIBLAGE DES COMPOSANTS (automatique)
+### PHASE 2 — UI DESIGN (sub-agent specialise)
 
-Une fois le wireframe validé :
+**Objectif** : Transformer le wireframe valide en specification UI detaillee avec composants precis, couleurs, espacements, responsive et micro-etats.
 
-1. **Pour chaque zone du wireframe**, détermine si un composant DSFR existe :
-   - **Si oui** → lis sa documentation dans `node_modules/@timotheej/dsfr-toolkit/docs/` (structure HTML, classes CSS, attributs ARIA, variantes)
-   - **Si non (marqué [CUSTOM])** → le composant sera créé avec les tokens DSFR (couleurs, typographie, espacements, grille). Note les tokens nécessaires.
-2. Choisis les variantes adaptées au contexte (taille, couleur d'accent, état)
-3. **Pour les pages applicatives** (dashboard, portail) : identifier explicitement les zones DSFR vs custom, et s'assurer que les composants custom utilisent bien les tokens DSFR pour rester visuellement cohérents
+**Execution** : Utilise l'outil **Task** pour spawner un agent UI Designer Senior :
+
+```
+Outil : Task
+subagent_type : "general-purpose"
+prompt :
+  "Lis et suis les instructions dans node_modules/@timotheej/dsfr-toolkit/agents/ui-designer.md
+
+   WIREFRAME VALIDE :
+   [Copie ici le wireframe valide par l'utilisateur]
+
+   CONTEXTE :
+   - Lis PROJET.md pour le contexte metier
+   - Lis les pages existantes dans src/pages/ pour la coherence visuelle
+   - Documentation DSFR disponible dans node_modules/@timotheej/dsfr-toolkit/docs/
+
+   Produis une specification UI detaillee pour chaque zone du wireframe."
+```
+
+Le sub-agent UI Designer retourne une spec detaillee avec :
+- Composants react-dsfr exacts (import + props) ou specs de composants custom
+- Tokens couleur precis (variables CSS DSFR)
+- Classes d'espacement exactes
+- Comportement responsive par breakpoint
+- Micro-etats des elements interactifs
 
 ---
 
-### PHASE 3b — COMPOSITION DE PAGE (automatique)
+### PHASE 3 — IMPLEMENTATION (toi, agent principal)
 
-Avant de coder, **lis obligatoirement** les règles de composition de page :
+Tu implementes fidelement la spec UI en React. Tu ne fais PAS de decisions de design — tu suis la spec.
 
-1. **Lis `node_modules/@timotheej/dsfr-toolkit/docs/fondations/espacement.md`** — section "Règles de composition de page"
-2. **Applique systématiquement** ces espacements structurels :
-   - `2w` (16px) entre un titre et son texte associé (chapô, description)
-   - `3w` (24px) entre un bloc titre+description et sa zone de contenu
-   - `4w` (32px) entre sous-sections d'une même section
-   - `5w` (40px) entre sections majeures, entre breadcrumb et titre, entre dernière section et retour en haut
-   - `7w` (56px) entre le dernier contenu et le pied de page
-3. **Vérifie la cohérence** avec les pages existantes du même parcours — mêmes espacements, même layout
+1. **Creer le composant page** dans `src/pages/NomPage.tsx` :
+   ```tsx
+   import { fr } from "@codegouvfr/react-dsfr";
+   import { Button } from "@codegouvfr/react-dsfr/Button";
+   // ... imports selon la spec UI
 
----
-
-### PHASE 4 — BUILD (génération du code)
-
-Crée le fichier HTML dans `pages/` en respectant ces règles :
-
-1. **Structure obligatoire** de chaque page :
-   - `<!doctype html>` avec `<html lang="fr" data-fr-scheme="system">`
-   - Meta viewport
-   - Chargement de `dsfr.min.css` + `utility.min.css`
-   - Skiplinks (`fr-skiplinks`) en premier dans le body
-   - Header (`fr-header`) avec bloc-marque République Française
-   - Fil d'Ariane (`fr-breadcrumb`)
-   - Main (`role="main"`)
-   - Footer (`fr-footer`) avec liens légaux
-   - Scripts DSFR en fin de body (module + nomodule)
-
-2. **Chemins CSS/JS** :
-   ```html
-   <link rel="stylesheet" href="../node_modules/@gouvfr/dsfr/dist/dsfr.min.css">
-   <link rel="stylesheet" href="../node_modules/@gouvfr/dsfr/dist/utility/utility.min.css">
-   <script type="module" src="../node_modules/@gouvfr/dsfr/dist/dsfr.module.min.js"></script>
-   <script nomodule src="../node_modules/@gouvfr/dsfr/dist/dsfr.nomodule.min.js"></script>
+   export function NomPage() {
+     return (
+       <div className={fr.cx("fr-container", "fr-my-6w")}>
+         <div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
+           <div className={fr.cx("fr-col-12")}>
+             {/* Implementation fidele a la spec UI */}
+           </div>
+         </div>
+       </div>
+     );
+   }
    ```
-   Note : pour les pages dans `pages/`, les chemins sont préfixés par `../`
 
-3. **Grille** : toujours `fr-container > fr-grid-row > fr-col-*`
+2. **Ajouter la route** dans `src/App.tsx` :
+   ```tsx
+   import { NomPage } from "./pages/NomPage";
+   // Dans les <Routes> :
+   <Route path="/nom-page" element={<NomPage />} />
+   ```
 
-4. **Composants custom** (pages applicatives uniquement) :
-   - CSS custom dans `assets/css/` — jamais en surcharge des classes `fr-*`
-   - Utiliser les variables CSS du DSFR : `var(--text-default-grey)`, `var(--background-default-grey)`, `var(--border-default-grey)`, etc.
-   - Respecter la typographie Marianne et les tailles `fr-text--*` / `fr-h*`
-   - Respecter les espacements DSFR (tokens `v` et `w`)
-   - Préfixer les classes custom pour les distinguer (ex: `app-*`, `dashboard-*`)
-   - Le dark mode doit fonctionner : utiliser les tokens couleur DSFR, jamais de couleurs en dur
+3. **Ajouter la navigation** dans `src/Layout.tsx` :
+   ```tsx
+   // Dans le tableau navigation du Header :
+   {
+     text: "Nom page",
+     linkProps: { to: "/nom-page" },
+     isActive: location.pathname === "/nom-page",
+   },
+   ```
+
+4. **Pour les composants custom** (selon la spec UI) :
+   - Creer dans `src/components/NomComposant.tsx`
+   - CSS custom dans `src/components/NomComposant.css` importe par le composant
+   - Utiliser les variables CSS DSFR (jamais de couleurs en dur)
+   - Prefixer les classes custom (ex: `app-*`, `dashboard-*`)
 
 5. **Formulaires** :
-   - Une seule colonne
-   - Labels au-dessus des inputs
-   - Champs obligatoires par défaut, optionnels marqués "(optionnel)"
-   - Messages d'erreur dans `fr-messages-group` avec `aria-live="polite"`
+   - Utiliser les composants react-dsfr : `<Input>`, `<Select>`, `<Checkbox>`, `<RadioButtons>`
+   - Une seule colonne, labels au-dessus des inputs
+   - Champs obligatoires par defaut, optionnels marques "(optionnel)"
 
 ---
 
-### PHASE 5 — SELF-REVIEW (automatique)
+### PHASE 4 — RECETTE UI (toi, agent principal + MCP Chrome DevTools)
 
-Après avoir généré le code, vérifie **automatiquement** :
+**Objectif** : Verifier que l'implementation est fidele a la spec UI avec une qualite professionnelle.
 
-1. **Conformité DSFR** :
-   - [ ] Aucun CSS custom ne remplace un composant DSFR existant
-   - [ ] La grille respecte `fr-container > fr-grid-row > fr-col-*`
-   - [ ] Les polices sont Marianne/Spectral uniquement
-   - [ ] Les composants custom (si présents) utilisent les tokens DSFR (couleurs, typo, espacements)
-   - [ ] Les classes custom sont préfixées et séparées des classes `fr-*`
-   - [ ] Le CSS custom est dans `assets/css/`, pas en inline ni en surcharge du DSFR
+**Execution** : Lis les instructions de review dans `node_modules/@timotheej/dsfr-toolkit/agents/ui-reviewer.md` et suis-les.
 
-2. **Accessibilité RGAA** :
-   - [ ] Skiplinks présents
-   - [ ] Attributs `aria-*` corrects
-   - [ ] Labels associés aux inputs
-   - [ ] Images décoratives avec `alt=""` ou `aria-hidden="true"`
-   - [ ] Hiérarchie des titres logique (h1 > h2 > h3...)
-   - [ ] `lang="fr"` sur la balise `<html>`
+En resume :
+1. **Screenshots multi-viewport** via MCP Chrome DevTools :
+   - Desktop 1440px, full page
+   - Tablet 768px, full page
+   - Mobile 375px, full page
+   - Dark mode desktop + mobile
+2. **Compare chaque screenshot avec la spec UI** sur 9 criteres :
+   - Hierarchie visuelle, alignement, espacement, couleurs, typographie, responsive, dark mode, accessibilite, impression generale
+3. **Classe les defauts** : Bloquant / Majeur / Mineur
+4. **Corrige les bloquants et majeurs**, reprends les screenshots
+5. **Repete** jusqu'a 0 bloquants et 0 majeurs
 
-3. **Dark mode** :
-   - [ ] `data-fr-scheme="system"` sur `<html>`
-   - [ ] Pas de couleurs en dur — utiliser les tokens DSFR
-
-4. **Structure** :
-   - [ ] Header avec bloc-marque présent
-   - [ ] Footer avec liens légaux présent
-   - [ ] `role="main"` sur le main
-
-5. **Composition et espacement** :
-   - [ ] Espacement titre → description/chapô = `fr-mt-2w` (16px)
-   - [ ] Espacement bloc titre+description → contenu = `fr-mt-3w` (24px)
-   - [ ] Espacement entre sous-sections = `fr-mt-4w` (32px)
-   - [ ] Espacement entre sections majeures = `fr-mt-5w` (40px)
-   - [ ] Espacement dernier contenu → footer = `fr-mt-7w` (56px)
-   - [ ] Layout cohérent avec les autres pages du même parcours
-   - [ ] Même structure header/breadcrumb/footer que les pages existantes
-
-Si un point n'est pas conforme, **corrige immédiatement** avant de présenter le résultat.
-Enfin, **propose les prochaines pages/écrans** à créer selon le contexte du projet.
+Enfin, **propose les prochaines pages/ecrans** a creer selon le contexte du projet.
 
 ---
 
-## Règles DSFR — Référence rapide
+## Correspondance DSFR → react-dsfr
+
+Utilise ces imports pour les composants DSFR en React :
+
+| Besoin | Import react-dsfr |
+|--------|-------------------|
+| Bouton | `import { Button } from "@codegouvfr/react-dsfr/Button"` |
+| Groupe de boutons | `import { ButtonsGroup } from "@codegouvfr/react-dsfr/ButtonsGroup"` |
+| Alerte | `import { Alert } from "@codegouvfr/react-dsfr/Alert"` |
+| Badge | `import { Badge } from "@codegouvfr/react-dsfr/Badge"` |
+| Breadcrumb | `import { Breadcrumb } from "@codegouvfr/react-dsfr/Breadcrumb"` |
+| Callout | `import { CallOut } from "@codegouvfr/react-dsfr/CallOut"` |
+| Carte | `import { Card } from "@codegouvfr/react-dsfr/Card"` |
+| Header | `import { Header } from "@codegouvfr/react-dsfr/Header"` |
+| Footer | `import { Footer } from "@codegouvfr/react-dsfr/Footer"` |
+| Input | `import { Input } from "@codegouvfr/react-dsfr/Input"` |
+| Select | `import { Select } from "@codegouvfr/react-dsfr/SelectNext"` |
+| Checkbox | `import { Checkbox } from "@codegouvfr/react-dsfr/Checkbox"` |
+| Radio | `import { RadioButtons } from "@codegouvfr/react-dsfr/RadioButtons"` |
+| Tableau | `import { Table } from "@codegouvfr/react-dsfr/Table"` |
+| Tag | `import { Tag } from "@codegouvfr/react-dsfr/Tag"` |
+| Onglets | `import { Tabs } from "@codegouvfr/react-dsfr/Tabs"` |
+| Tuile | `import { Tile } from "@codegouvfr/react-dsfr/Tile"` |
+| Accordeon | `import { Accordion } from "@codegouvfr/react-dsfr/Accordion"` |
+| Modale | `import { createModal } from "@codegouvfr/react-dsfr/Modal"` |
+| Pagination | `import { Pagination } from "@codegouvfr/react-dsfr/Pagination"` |
+| Stepper | `import { Stepper } from "@codegouvfr/react-dsfr/Stepper"` |
+| Toggle | `import { ToggleSwitch } from "@codegouvfr/react-dsfr/ToggleSwitch"` |
+| Notice / Bandeau | `import { Notice } from "@codegouvfr/react-dsfr/Notice"` |
+| Highlight | `import { Highlight } from "@codegouvfr/react-dsfr/Highlight"` |
+| Sidemenu | `import { SideMenu } from "@codegouvfr/react-dsfr/SideMenu"` |
+| Upload | `import { Upload } from "@codegouvfr/react-dsfr/Upload"` |
+| Mot de passe | `import { PasswordInput } from "@codegouvfr/react-dsfr/blocks/PasswordInput"` |
+| Classes utilitaires | `import { fr } from "@codegouvfr/react-dsfr"` puis `fr.cx("fr-mt-4w")` |
+| Dark mode (hook) | `import { useIsDark } from "@codegouvfr/react-dsfr/useIsDark"` |
+| Theme affichage | `import { headerFooterDisplayItem } from "@codegouvfr/react-dsfr/Display"` |
+
+---
+
+## Regles DSFR — Reference rapide
 
 ### Convention de nommage CSS
 
-- Préfixe : `fr-`
-- Méthodologie : BEM (Block-Element-Modifier)
+- Prefixe : `fr-`
+- Methodologie : BEM (Block-Element-Modifier)
 - Pattern : `fr-block__element--modifier`
+- En React : toujours via `fr.cx("fr-block__element--modifier")`
 
 ### Breakpoints
 
 | Nom | Min-width | Suffixe |
 |-----|-----------|---------|
-| XS | 0px | (défaut) |
+| XS | 0px | (defaut) |
 | SM | 576px | `-sm` |
 | MD | 768px | `-md` |
 | LG | 992px | `-lg` |
 | XL | 1248px | `-xl` |
 
+### Espacements structurels
+
+| Contexte | Token | Valeur |
+|----------|-------|--------|
+| Titre → description | `fr-mt-2w` | 16px |
+| Bloc titre → contenu | `fr-mt-3w` | 24px |
+| Entre sous-sections | `fr-mt-4w` | 32px |
+| Entre sections majeures | `fr-mt-5w` | 40px |
+| Dernier contenu → footer | `fr-mt-7w` | 56px |
+
 ---
 
-## Documentation DSFR complète
+## Documentation DSFR complete
 
-**Lis ces fichiers quand tu dois utiliser un composant.** Ils contiennent la structure HTML exacte, les classes CSS et les variantes.
+**Note importante** : La documentation ci-dessous decrit la structure HTML des composants DSFR. En React, utiliser les composants `@codegouvfr/react-dsfr` qui encapsulent ce HTML. La documentation reste utile pour :
+- Comprendre les variantes disponibles (tailles, couleurs, etats)
+- Les attributs aria-* et l'accessibilite
+- Les classes CSS utilitaires applicables via `fr.cx()`
+- La structure des composants complexes (Header, Footer)
 
 ### Fondations
 
@@ -269,16 +303,16 @@ Enfin, **propose les prochaines pages/écrans** à créer selon le contexte du p
 | Couleurs | `node_modules/@timotheej/dsfr-toolkit/docs/fondations/couleurs.md` |
 | Grille et breakpoints | `node_modules/@timotheej/dsfr-toolkit/docs/fondations/grille.md` |
 | Espacement | `node_modules/@timotheej/dsfr-toolkit/docs/fondations/espacement.md` |
-| Icônes | `node_modules/@timotheej/dsfr-toolkit/docs/fondations/icones.md` |
+| Icones | `node_modules/@timotheej/dsfr-toolkit/docs/fondations/icones.md` |
 | Pictogrammes | `node_modules/@timotheej/dsfr-toolkit/docs/fondations/pictogrammes.md` |
-| Élévation/ombres | `node_modules/@timotheej/dsfr-toolkit/docs/fondations/elevation.md` |
-| Médias | `node_modules/@timotheej/dsfr-toolkit/docs/fondations/medias.md` |
+| Elevation/ombres | `node_modules/@timotheej/dsfr-toolkit/docs/fondations/elevation.md` |
+| Medias | `node_modules/@timotheej/dsfr-toolkit/docs/fondations/medias.md` |
 
 ### Composants
 
-| Composant | Préfixe CSS | Documentation |
+| Composant | Prefixe CSS | Documentation |
 |-----------|-------------|---------------|
-| Accordéon | `fr-accordion` | `node_modules/@timotheej/dsfr-toolkit/docs/composants/accordeon.md` |
+| Accordeon | `fr-accordion` | `node_modules/@timotheej/dsfr-toolkit/docs/composants/accordeon.md` |
 | Alerte | `fr-alert` | `node_modules/@timotheej/dsfr-toolkit/docs/composants/alerte.md` |
 | Badge | `fr-badge` | `node_modules/@timotheej/dsfr-toolkit/docs/composants/badge.md` |
 | Bandeau info | `fr-notice` | `node_modules/@timotheej/dsfr-toolkit/docs/composants/notice.md` |
@@ -293,8 +327,8 @@ Enfin, **propose les prochaines pages/écrans** à créer selon le contexte du p
 | Callout | `fr-callout` | `node_modules/@timotheej/dsfr-toolkit/docs/composants/callout.md` |
 | Citation | `fr-quote` | `node_modules/@timotheej/dsfr-toolkit/docs/composants/citation.md` |
 | Consentement | `fr-consent-banner` | `node_modules/@timotheej/dsfr-toolkit/docs/composants/consentement.md` |
-| Contenu médias | `fr-content-media` | `node_modules/@timotheej/dsfr-toolkit/docs/composants/contenu-medias.md` |
-| Segmenté | `fr-segmented` | `node_modules/@timotheej/dsfr-toolkit/docs/composants/segmented.md` |
+| Contenu medias | `fr-content-media` | `node_modules/@timotheej/dsfr-toolkit/docs/composants/contenu-medias.md` |
+| Segmente | `fr-segmented` | `node_modules/@timotheej/dsfr-toolkit/docs/composants/segmented.md` |
 | Curseur | `fr-range` | `node_modules/@timotheej/dsfr-toolkit/docs/composants/curseur.md` |
 | Header | `fr-header` | `node_modules/@timotheej/dsfr-toolkit/docs/composants/header.md` |
 | Breadcrumb | `fr-breadcrumb` | `node_modules/@timotheej/dsfr-toolkit/docs/composants/breadcrumb.md` |
@@ -331,13 +365,13 @@ Enfin, **propose les prochaines pages/écrans** à créer selon le contexte du p
 | Classes d'affichage | `node_modules/@timotheej/dsfr-toolkit/docs/utilitaires/affichage.md` |
 | Classes d'espacement | `node_modules/@timotheej/dsfr-toolkit/docs/utilitaires/espacement.md` |
 
-### Modèles de pages
+### Modeles de pages
 
-| Modèle | Fichier |
+| Modele | Fichier |
 |--------|---------|
 | Pages d'erreur | `node_modules/@timotheej/dsfr-toolkit/docs/modeles/erreurs.md` |
 | Page de connexion | `node_modules/@timotheej/dsfr-toolkit/docs/modeles/connexion.md` |
-| Formulaire multi-étapes | `node_modules/@timotheej/dsfr-toolkit/docs/modeles/formulaire-multi-etapes.md` |
+| Formulaire multi-etapes | `node_modules/@timotheej/dsfr-toolkit/docs/modeles/formulaire-multi-etapes.md` |
 | Tableau filtrable | `node_modules/@timotheej/dsfr-toolkit/docs/modeles/tableau-filtrable.md` |
 | Page de liste | `node_modules/@timotheej/dsfr-toolkit/docs/modeles/page-de-liste.md` |
 | Page de contenu | `node_modules/@timotheej/dsfr-toolkit/docs/modeles/page-de-contenu.md` |
@@ -346,8 +380,8 @@ Enfin, **propose les prochaines pages/écrans** à créer selon le contexte du p
 
 ## Composants Beta (ne pas utiliser en production)
 
-En-tête connectée, Combobox, Dropdown, Tabnav, Composition
+En-tete connectee, Combobox, Dropdown, Tabnav, Composition
 
-## Composant déprécié
+## Composant deprecie
 
-Téléchargement (`fr-download`) → Utiliser Card, Link ou Tile en variante download
+Telechargement (`fr-download`) → Utiliser Card, Link ou Tile en variante download

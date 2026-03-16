@@ -17,10 +17,10 @@ if (command === '--version' || command === '-v') {
 // --help / -h
 if (command === '--help' || command === '-h' || !command) {
   console.log('');
-  console.log('\x1b[34m@timotheej/dsfr-toolkit\x1b[0m — Toolkit DSFR pour Claude Code');
+  console.log('\x1b[34m@timotheej/dsfr-toolkit\x1b[0m — Toolkit DSFR React pour Claude Code');
   console.log('');
   console.log('Commandes :');
-  console.log('  \x1b[36mcreate <nom-projet>\x1b[0m    Créer un nouveau projet DSFR');
+  console.log('  \x1b[36mcreate <nom-projet>\x1b[0m    Creer un nouveau projet DSFR React');
   console.log('  \x1b[36mupdate\x1b[0m                 Mettre à jour les dépendances du projet courant');
   console.log('');
   console.log('Options :');
