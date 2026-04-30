@@ -2,8 +2,9 @@
 
 ## Ce que c'est
 
-Package npm CLI qui scaffold des projets DSFR React pour les designers.
+Package npm CLI qui scaffold des projets DSFR pour les designers.
 Les designers font `npx @timotheej/dsfr-toolkit create mon-projet` et obtiennent un projet React + Vite + TypeScript + react-dsfr pret avec Claude Code integre.
+Une fois les ecrans valides dans le navigateur, ils peuvent les exporter dans Figma via le MCP Figma.
 
 ## Structure du repo
 
@@ -13,10 +14,12 @@ Les designers font `npx @timotheej/dsfr-toolkit create mon-projet` et obtiennent
 ├── agents/                 # Prompts des agents specialises (publies dans le package npm)
 │   ├── ux-researcher.md    # Agent UX : analyse besoin, wireframe, rationale
 │   ├── ui-designer.md      # Agent UI : spec visuelle creative dans le cadre DSFR
-│   └── ui-reviewer.md      # Agent QA : recette UI via MCP Chrome DevTools
+│   ├── ui-reviewer.md      # Agent QA : recette UI via MCP Chrome DevTools
+│   ├── figma-builder.md    # Methodologie export React → Figma via MCP Figma
+│   └── figma-reviewer.md   # Checklist review maquettes Figma
 ├── templates/              # Templates copies dans les projets designer
-│   ├── boilerplate/        # Boilerplate React complet (index.html, src/*.tsx, vite.config.ts, tsconfig.json)
-│   ├── CLAUDE.md.tpl       # CLAUDE.md du projet (orchestrateur multi-agents)
+│   ├── boilerplate/        # Boilerplate React complet
+│   ├── CLAUDE.md.react.tpl # CLAUDE.md du projet (orchestrateur multi-agents + export Figma)
 │   ├── PROJET.md.tpl       # Template contexte metier
 │   └── gitignore.tpl       # .gitignore
 ├── docs/                   # Documentation DSFR embarquee dans le package
@@ -31,10 +34,19 @@ Les designers font `npx @timotheej/dsfr-toolkit create mon-projet` et obtiennent
 └── CLAUDE.md               # Ce fichier (instructions pour le repo source)
 ```
 
+## Workflow designer
+
+Le nouveau flow des designers avec le toolkit :
+
+1. **Creer** : `npx @timotheej/dsfr-toolkit create mon-projet`
+2. **Prototyper** : prompter Claude Code → il build les ecrans React DSFR
+3. **Tester** : valider dans le navigateur (responsive, interactions, dark mode)
+4. **Exporter** (optionnel) : dire a Claude "exporte cette page dans Figma" → il traduit le code React en maquette Figma avec composants de la bibliotheque DSFR
+
 ## Regles de developpement
 
 1. **Ne pas modifier les docs DSFR** sans bumper la version du package
-2. **Les fichiers les plus critiques sont `templates/CLAUDE.md.tpl` (orchestrateur) et `agents/` (prompts specialises)** — ils pilotent le workflow multi-agents de Claude Code dans les projets designers
+2. **Le fichier le plus critique est `templates/CLAUDE.md.react.tpl`** (orchestrateur) et `agents/` (prompts specialises) — ils pilotent le workflow multi-agents de Claude Code dans les projets designers
 3. Utiliser uniquement les modules Node.js natifs (fs, path, child_process) — zero dependance runtime
 4. Tester avec `npm link` puis `npx dsfr-toolkit create test-projet`
 5. Lancer les tests avec `node tests/create.test.js`

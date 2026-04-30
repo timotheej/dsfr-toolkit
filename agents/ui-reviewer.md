@@ -106,7 +106,22 @@ Pour chaque screenshot, compare avec la spec UI sur les 9 criteres ci-dessous.
 - [ ] Les champs de formulaire ont des labels visibles (pas seulement placeholder)
 - [ ] Les icones d'action ont un label accessible (aria-label ou texte)
 
-### 9. Impression generale
+### 9. Lisibilite et tokens
+
+- [ ] Chaque texte utilise un token `--text-*` pour sa couleur (jamais un token `--background-*`)
+- [ ] Chaque fond utilise un token `--background-*` (jamais un token `--text-*`)
+- [ ] Les textes sur fonds colores utilisent les tokens prevus (ex: `--text-inverted-*` sur fond contrast)
+- [ ] Tous les textes sont lisibles — pas de texte clair sur fond clair ou sombre sur sombre
+
+### 10. Harmonie visuelle
+
+- [ ] **Test du plissement d'yeux** : en imaginant la page floutee, la hierarchie est-elle claire ? Le regard est-il guide vers le contenu principal, ou disperse entre trop de points d'attention ?
+- [ ] **Comptage des accents** : combien de couleurs d'accent distinctes dans le meme viewport ? Si > 3, c'est un red flag.
+- [ ] Dans les groupes d'elements repetes (KPI, cartes, items), la differenciation passe par le contenu, pas par la couleur
+- [ ] La page ne fait pas "sapin de Noel" — les couleurs servent la hierarchie, pas la decoration
+- [ ] Il y a suffisamment de blanc/gris neutre pour faire respirer les accents
+
+### 11. Impression generale
 
 - [ ] La page fait "professionnelle" — pas de bricolage visible
 - [ ] Il y a un rythme visuel (alternance sections pleines/legeres)
@@ -120,9 +135,10 @@ Pour chaque screenshot, compare avec la spec UI sur les 9 criteres ci-dessous.
 
 | Severite | Definition | Action |
 |----------|-----------|--------|
-| **BLOQUANT** | Element invisible, debordement, contraste insuffisant, layout casse | Corriger IMMEDIATEMENT avant de continuer |
+| **BLOQUANT** | Element invisible, debordement, contraste insuffisant, layout casse | Corriger IMMEDIATEMENT |
 | **MAJEUR** | Espacement incoherent, couleur incorrecte, responsive approximatif | Corriger dans cette iteration |
-| **MINEUR** | Details d'alignement, micro-ajustements, suggestions d'amelioration | Corriger si possible, sinon noter pour plus tard |
+| **DESIGN** | Le probleme vient de la spec UI, pas de l'implementation (ex: trop de couleurs, hierarchie confuse, tokens croises) | **Remonter a la Phase 2** — demander une revision de la spec UI |
+| **MINEUR** | Details d'alignement, micro-ajustements, suggestions d'amelioration | Corriger si possible |
 
 ---
 
@@ -156,10 +172,11 @@ Pour chaque screenshot, compare avec la spec UI sur les 9 criteres ci-dessous.
 
 ## Boucle de correction
 
-1. Apres le rapport, **corriger tous les bloquants et majeurs**
-2. **Reprendre les screenshots** (les 6 viewports)
-3. **Re-verifier** les points corriges
-4. **Repeter** jusqu'a 0 bloquants et 0 majeurs
-5. Les mineurs peuvent etre acceptes avec une note
+1. **Si defauts DESIGN** : STOP — ne pas corriger l'implementation. Remonter le probleme a l'orchestrateur pour qu'il relance la Phase 2 (UI Design) avec les retours. Le probleme est dans la spec, pas dans le code.
+2. **Si defauts BLOQUANTS ou MAJEURS** : corriger l'implementation
+3. **Reprendre les screenshots** (les 6 viewports)
+4. **Re-verifier** les points corriges
+5. **Repeter** jusqu'a 0 bloquants, 0 majeurs et 0 design
+6. Les mineurs peuvent etre acceptes avec une note
 
-**Ne jamais approuver une page avec des bloquants restants.**
+**Ne jamais approuver une page avec des bloquants ou des defauts design restants.**

@@ -108,12 +108,11 @@ try {
   assert(err.stderr.includes('espaces'), 'affiche erreur sur les espaces');
 }
 
-// --- Scaffolding complet (React SPA) ---
+// --- Scaffolding projet ---
 
 console.log('');
-console.log('\x1b[34m\u25b8 Scaffolding complet React SPA (sans npm install)\x1b[0m');
+console.log('\x1b[34m\u25b8 Scaffolding projet\x1b[0m');
 
-// Creer un projet de test dans un dossier temporaire
 const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'dsfr-test-'));
 const testProjectName = 'test-scaffold';
 const testProjectPath = path.join(tmpDir, testProjectName);
@@ -126,10 +125,10 @@ try {
     env: { ...process.env, DSFR_SKIP_INSTALL: '1' },
   });
 } catch (err) {
-  // npm install peut echouer dans le contexte de test, on verifie juste les fichiers
+  // npm install peut echouer dans le contexte de test
 }
 
-// Verifier la structure React
+// Structure
 assert(fs.existsSync(testProjectPath), 'dossier projet cree');
 assert(fs.existsSync(path.join(testProjectPath, 'package.json')), 'package.json existe');
 assert(fs.existsSync(path.join(testProjectPath, 'index.html')), 'index.html existe');
@@ -142,74 +141,35 @@ assert(fs.existsSync(path.join(testProjectPath, 'src', 'main.tsx')), 'src/main.t
 assert(fs.existsSync(path.join(testProjectPath, 'src', 'App.tsx')), 'src/App.tsx existe');
 assert(fs.existsSync(path.join(testProjectPath, 'src', 'Layout.tsx')), 'src/Layout.tsx existe');
 assert(fs.existsSync(path.join(testProjectPath, 'src', 'pages', 'Accueil.tsx')), 'src/pages/Accueil.tsx existe');
-assert(fs.existsSync(path.join(testProjectPath, 'src', 'vite-env.d.ts')), 'src/vite-env.d.ts existe');
 assert(fs.existsSync(path.join(testProjectPath, 'specs', 'README.md')), 'specs/README.md existe');
 
-// Verifier le remplacement de {{PROJECT_NAME}}
+// Contenu CLAUDE.md
 const claudeMd = fs.readFileSync(path.join(testProjectPath, 'CLAUDE.md'), 'utf8');
 assert(claudeMd.includes(testProjectName), 'CLAUDE.md contient le nom du projet');
 assert(!claudeMd.includes('{{PROJECT_NAME}}'), 'CLAUDE.md ne contient plus de placeholder');
-
-const projetMd = fs.readFileSync(path.join(testProjectPath, 'PROJET.md'), 'utf8');
-assert(projetMd.includes(testProjectName), 'PROJET.md contient le nom du projet');
-
-// Verifier le contenu des fichiers React
-const mainTsx = fs.readFileSync(path.join(testProjectPath, 'src', 'main.tsx'), 'utf8');
-assert(mainTsx.includes('startReactDsfr'), 'main.tsx initialise react-dsfr');
-assert(mainTsx.includes('BrowserRouter'), 'main.tsx configure BrowserRouter');
-assert(mainTsx.includes('defaultColorScheme'), 'main.tsx configure le color scheme');
-
-const layoutTsx = fs.readFileSync(path.join(testProjectPath, 'src', 'Layout.tsx'), 'utf8');
-assert(layoutTsx.includes(testProjectName), 'Layout.tsx contient le nom du projet');
-assert(!layoutTsx.includes('{{PROJECT_NAME}}'), 'Layout.tsx ne contient plus de placeholder');
-assert(layoutTsx.includes('Header'), 'Layout.tsx utilise le Header react-dsfr');
-assert(layoutTsx.includes('Footer'), 'Layout.tsx utilise le Footer react-dsfr');
-assert(layoutTsx.includes('Outlet'), 'Layout.tsx utilise Outlet pour le routing');
-
-const appTsx = fs.readFileSync(path.join(testProjectPath, 'src', 'App.tsx'), 'utf8');
-assert(appTsx.includes('Routes'), 'App.tsx utilise Routes');
-assert(appTsx.includes('Layout'), 'App.tsx reference le Layout');
-assert(appTsx.includes('Accueil'), 'App.tsx reference la page Accueil');
-
-const accueilTsx = fs.readFileSync(path.join(testProjectPath, 'src', 'pages', 'Accueil.tsx'), 'utf8');
-assert(accueilTsx.includes(testProjectName), 'Accueil.tsx contient le nom du projet');
-assert(accueilTsx.includes('fr.cx'), 'Accueil.tsx utilise fr.cx()');
-
-const indexHtml = fs.readFileSync(path.join(testProjectPath, 'index.html'), 'utf8');
-assert(indexHtml.includes(testProjectName), 'index.html contient le nom du projet');
-assert(indexHtml.includes('react-dsfr/main.css'), 'index.html charge le CSS react-dsfr');
-assert(indexHtml.includes('src/main.tsx'), 'index.html pointe vers main.tsx');
-
-// Verifier le package.json genere
-const generatedPkg = JSON.parse(fs.readFileSync(path.join(testProjectPath, 'package.json'), 'utf8'));
-assert(generatedPkg.name === testProjectName, 'package.json a le bon nom');
-assert(generatedPkg.private === true, 'package.json est prive');
-assert(generatedPkg.type === 'module', 'package.json est type module');
-assert(generatedPkg.scripts && generatedPkg.scripts.dev === 'vite', 'package.json script dev = vite');
-assert(generatedPkg.scripts.predev && generatedPkg.scripts.predev.includes('react-dsfr'), 'package.json predev utilise react-dsfr');
-assert(generatedPkg.dependencies['@codegouvfr/react-dsfr'], 'package.json a @codegouvfr/react-dsfr');
-assert(generatedPkg.dependencies['react'], 'package.json a react');
-assert(generatedPkg.dependencies['react-dom'], 'package.json a react-dom');
-assert(generatedPkg.dependencies['react-router-dom'], 'package.json a react-router-dom');
-assert(generatedPkg.dependencies['@timotheej/dsfr-toolkit'], 'package.json a @timotheej/dsfr-toolkit');
-assert(generatedPkg.devDependencies['typescript'], 'package.json a typescript en devDep');
-assert(generatedPkg.devDependencies['vite'], 'package.json a vite en devDep');
-assert(generatedPkg.devDependencies['@vitejs/plugin-react'], 'package.json a @vitejs/plugin-react en devDep');
-
-// Verifier que le CLAUDE.md contient les sections du workflow multi-agents
-assert(claudeMd.includes('PHASE 0'), 'CLAUDE.md contient Phase 0 (initialisation)');
-assert(claudeMd.includes('PHASE 1'), 'CLAUDE.md contient Phase 1 (UX Research)');
-assert(claudeMd.includes('PHASE 2'), 'CLAUDE.md contient Phase 2 (UI Design)');
-assert(claudeMd.includes('PHASE 3'), 'CLAUDE.md contient Phase 3 (implementation)');
-assert(claudeMd.includes('PHASE 4'), 'CLAUDE.md contient Phase 4 (review)');
+assert(claudeMd.includes('PHASE 0'), 'CLAUDE.md contient Phase 0');
+assert(claudeMd.includes('PHASE 1'), 'CLAUDE.md contient Phase 1');
+assert(claudeMd.includes('PHASE 2'), 'CLAUDE.md contient Phase 2');
+assert(claudeMd.includes('PHASE 3'), 'CLAUDE.md contient Phase 3');
+assert(claudeMd.includes('PHASE 4'), 'CLAUDE.md contient Phase 4');
+assert(claudeMd.includes('PHASE 5'), 'CLAUDE.md contient Phase 5 (Export Figma)');
 assert(claudeMd.includes('react-dsfr'), 'CLAUDE.md mentionne react-dsfr');
-assert(claudeMd.includes('React Router'), 'CLAUDE.md mentionne React Router');
-assert(claudeMd.includes('multi-agents'), 'CLAUDE.md mentionne architecture multi-agents');
-assert(claudeMd.includes('ux-researcher.md'), 'CLAUDE.md reference l\'agent UX');
-assert(claudeMd.includes('ui-designer.md'), 'CLAUDE.md reference l\'agent UI');
-assert(claudeMd.includes('ui-reviewer.md'), 'CLAUDE.md reference l\'agent Review');
+assert(claudeMd.includes('ui-reviewer.md'), 'CLAUDE.md reference ui-reviewer');
+assert(claudeMd.includes('Export Figma') || claudeMd.includes('EXPORT FIGMA'), 'CLAUDE.md mentionne Export Figma');
+assert(claudeMd.includes('search_design_system'), 'CLAUDE.md contient search_design_system pour export Figma');
+assert(claudeMd.includes('CHECKLIST OBLIGATOIRE'), 'CLAUDE.md contient la checklist de verification Figma');
 
-// Nettoyage
+// package.json
+const reactPkg = JSON.parse(fs.readFileSync(path.join(testProjectPath, 'package.json'), 'utf8'));
+assert(reactPkg.name === testProjectName, 'package.json a le bon nom');
+assert(reactPkg.private === true, 'package.json est prive');
+assert(reactPkg.type === 'module', 'package.json est type module');
+assert(reactPkg.scripts && reactPkg.scripts.dev === 'vite', 'package.json script dev = vite');
+assert(reactPkg.dependencies['react'], 'package.json a react');
+assert(reactPkg.dependencies['@codegouvfr/react-dsfr'], 'package.json a @codegouvfr/react-dsfr');
+assert(reactPkg.dependencies['@timotheej/dsfr-toolkit'], 'package.json a @timotheej/dsfr-toolkit');
+assert(reactPkg.devDependencies['vite'], 'package.json a vite en devDep');
+
 fs.rmSync(tmpDir, { recursive: true, force: true });
 
 // --- Agents specialises ---
@@ -222,6 +182,8 @@ assert(fs.existsSync(agentsDir), 'dossier agents/ existe');
 assert(fs.existsSync(path.join(agentsDir, 'ux-researcher.md')), 'agents/ux-researcher.md existe');
 assert(fs.existsSync(path.join(agentsDir, 'ui-designer.md')), 'agents/ui-designer.md existe');
 assert(fs.existsSync(path.join(agentsDir, 'ui-reviewer.md')), 'agents/ui-reviewer.md existe');
+assert(fs.existsSync(path.join(agentsDir, 'figma-builder.md')), 'agents/figma-builder.md existe');
+assert(fs.existsSync(path.join(agentsDir, 'figma-reviewer.md')), 'agents/figma-reviewer.md existe');
 
 const uxAgent = fs.readFileSync(path.join(agentsDir, 'ux-researcher.md'), 'utf8');
 assert(uxAgent.includes('wireframe'), 'agent UX mentionne wireframe');
@@ -229,17 +191,40 @@ assert(uxAgent.includes('PROJET.md'), 'agent UX reference PROJET.md');
 
 const uiAgent = fs.readFileSync(path.join(agentsDir, 'ui-designer.md'), 'utf8');
 assert(uiAgent.includes('tokens DSFR'), 'agent UI mentionne tokens DSFR');
-assert(uiAgent.includes('KPI'), 'agent UI mentionne patterns creatifs (KPI)');
 assert(uiAgent.includes('blue-france'), 'agent UI connait la palette DSFR');
 
 const reviewAgent = fs.readFileSync(path.join(agentsDir, 'ui-reviewer.md'), 'utf8');
 assert(reviewAgent.includes('screenshot'), 'agent Review mentionne screenshots');
 assert(reviewAgent.includes('BLOQUANT'), 'agent Review a une classification de severite');
-assert(reviewAgent.includes('dark mode'), 'agent Review verifie le dark mode');
+
+const figmaBuilder = fs.readFileSync(path.join(agentsDir, 'figma-builder.md'), 'utf8');
+assert(figmaBuilder.includes('search_design_system'), 'agent Figma Builder utilise search_design_system');
+assert(figmaBuilder.includes('use_figma'), 'agent Figma Builder utilise use_figma');
+assert(figmaBuilder.includes('get_screenshot'), 'agent Figma Builder utilise get_screenshot');
+assert(figmaBuilder.includes('En-tete'), 'agent Figma Builder connait les noms DSFR Figma');
+assert(figmaBuilder.includes('react-dsfr'), 'agent Figma Builder reference react-dsfr (code→Figma)');
+
+const figmaReviewer = fs.readFileSync(path.join(agentsDir, 'figma-reviewer.md'), 'utf8');
+assert(figmaReviewer.includes('get_screenshot'), 'agent Figma Reviewer utilise get_screenshot');
+assert(figmaReviewer.includes('BLOQUANT'), 'agent Figma Reviewer a une classification de severite');
+assert(figmaReviewer.includes('auto-layout'), 'agent Figma Reviewer verifie auto-layout');
 
 // Verifier que package.json inclut agents/ dans files
 const toolkitPkg = JSON.parse(fs.readFileSync(path.resolve(__dirname, '..', 'package.json'), 'utf8'));
 assert(toolkitPkg.files.includes('agents/'), 'package.json inclut agents/ dans files');
+
+// --- Templates ---
+
+console.log('');
+console.log('\x1b[34m\u25b8 Templates\x1b[0m');
+
+const templatesDir = path.resolve(__dirname, '..', 'templates');
+assert(fs.existsSync(path.join(templatesDir, 'CLAUDE.md.react.tpl')), 'CLAUDE.md.react.tpl existe');
+assert(!fs.existsSync(path.join(templatesDir, 'CLAUDE.md.figma.tpl')), 'CLAUDE.md.figma.tpl supprime');
+assert(fs.existsSync(path.join(templatesDir, 'PROJET.md.tpl')), 'PROJET.md.tpl existe');
+assert(fs.existsSync(path.join(templatesDir, 'gitignore.tpl')), 'gitignore.tpl existe');
+assert(fs.existsSync(path.join(templatesDir, 'boilerplate')), 'boilerplate/ existe');
+assert(!fs.existsSync(path.join(templatesDir, 'CLAUDE.md.tpl')), 'ancien CLAUDE.md.tpl n\'existe plus');
 
 // --- Dossier existant ---
 

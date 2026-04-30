@@ -1,19 +1,21 @@
 # Instructions projet — {{PROJECT_NAME}} (DSFR React)
 
-## REGLE FONDAMENTALE : DSFR d'abord
+## REGLE FONDAMENTALE : DSFR standard, sobre et corporate
 
-**Pour toute modification ou creation dans ce projet, la priorite est au DSFR.** Appliquer dans cet ordre :
+**Pour toute modification ou creation dans ce projet, utiliser les composants DSFR tels quels.** Le DSFR est deja bien designe — ne pas surdesigner.
 
-1. **Composant react-dsfr** — si un composant `@codegouvfr/react-dsfr` repond au besoin, l'utiliser mais pousser les variantes (couleurs d'accent, tailles, icones)
-2. **Composant custom + tokens DSFR** — si aucun composant react-dsfr n'existe (graphiques, KPI, widgets metier, timeline...), creer un composant React custom qui RESPIRE le DSFR : tokens couleur, typo Marianne, espacements DSFR, ombres DSFR
-3. **CSS custom** — uniquement pour ce que les tokens ne couvrent pas, dans un fichier `.css` importe par le composant, jamais en surcharge du DSFR
+1. **Composant react-dsfr avec variante par defaut** — utiliser le composant standard. Ne changer la variante que si le besoin l'exige (ex: severity d'un badge)
+2. **Composant custom sobre** — uniquement si AUCUN composant DSFR ne convient. Structure simple avec tokens DSFR, pas d'ombres custom, pas de fonds colores
+3. **CSS custom** — cas exceptionnel, dans un fichier `.css` importe, jamais en surcharge du DSFR
 
-### Le DSFR est un cadre, pas une prison
+### Sobriete = qualite
 
-Le DSFR offre un vocabulaire visuel riche. Il ne s'agit pas de poser des blocs gris par defaut. Utiliser :
-- Les **couleurs d'accent** (blue-france, green-emeraude, purple-glycine, etc.) pour creer du rythme visuel
-- Les **variantes de composants** (tailles, icones, severity) pour enrichir l'interface
-- Les **composants custom coherents DSFR** pour les besoins metier (KPI cards, timelines, status indicators, bannieres colorees)
+Le site systeme-de-design.gouv.fr est la reference : sobre, propre, corporate. Appliquer les memes principes :
+- **Fonds** : blanc (`--background-default-grey`) + gris clair (`--background-alt-grey`) pour le rythme. C'est tout.
+- **Couleurs d'accent** : uniquement semantiques (success, error, warning, info sur les badges/alertes). Pas de decoration.
+- **Ombres** : aucune custom. Les composants DSFR gerent les leurs.
+- **Differenciation** : par le contenu et la typographie, pas par la couleur.
+- **Pas de fonds contrast-* pour des sections** — reserve aux CallOut, Alert, Notice.
 
 ### Pages de contenu vs pages applicatives
 
@@ -207,13 +209,78 @@ En resume :
    - Tablet 768px, full page
    - Mobile 375px, full page
    - Dark mode desktop + mobile
-2. **Compare chaque screenshot avec la spec UI** sur 9 criteres :
-   - Hierarchie visuelle, alignement, espacement, couleurs, typographie, responsive, dark mode, accessibilite, impression generale
-3. **Classe les defauts** : Bloquant / Majeur / Mineur
-4. **Corrige les bloquants et majeurs**, reprends les screenshots
-5. **Repete** jusqu'a 0 bloquants et 0 majeurs
+2. **Compare chaque screenshot avec la spec UI** sur 11 criteres :
+   - Hierarchie visuelle, alignement, espacement, couleurs, typographie, responsive, dark mode, accessibilite, lisibilite des tokens, harmonie visuelle, impression generale
+3. **Classe les defauts** : Bloquant / Majeur / Design / Mineur
+4. **Si defauts DESIGN** (probleme dans la spec, pas dans le code) : **retour a la Phase 2** — relance le sub-agent UI Designer avec les retours du reviewer, puis re-implemente
+5. **Corrige les bloquants et majeurs**, reprends les screenshots
+6. **Repete** jusqu'a 0 bloquants, 0 majeurs et 0 design
 
 Enfin, **propose les prochaines pages/ecrans** a creer selon le contexte du projet.
+
+---
+
+### PHASE 5 — EXPORT FIGMA (optionnel, sur demande)
+
+**Objectif** : Exporter un ecran React valide vers Figma pour documentation/handoff.
+
+**Prerequis** :
+- MCP Figma connecte dans Claude Code (plugin `figma@claude-plugins-official`)
+- Bibliotheque DSFR connectee dans le fichier Figma cible ("DSFR - Composants" + "DSFR - Fondamentaux")
+- URL du fichier Figma fournie par l'utilisateur
+
+**Quand** : l'utilisateur dit "exporte dans Figma", "pousse dans Figma", "cree la maquette Figma", etc.
+
+**Execution** : Utilise l'outil **Task** pour spawner un sub-agent avec contexte frais :
+
+```
+Outil : Task
+subagent_type : "general-purpose"
+prompt :
+
+  "Tu dois recreer dans Figma un ecran React existant en utilisant les composants
+   de la bibliotheque DSFR connectee.
+
+   ## REGLE ABSOLUE
+   Pour CHAQUE composant react-dsfr utilise dans le code, tu DOIS instancier
+   le composant equivalent depuis la bibliotheque DSFR Figma :
+   1. search_design_system('[nom composant]') — trouver le composant
+   2. Invoquer le skill /figma:figma-use — OBLIGATOIRE avant chaque use_figma
+   3. use_figma(...) — instancier le composant de la bibliotheque
+
+   JAMAIS de shapes manuelles pour remplacer un composant DSFR.
+
+   ## CODE REACT SOURCE
+   [Copie ici le contenu complet du fichier src/pages/XxxPage.tsx]
+
+   ## CORRESPONDANCE react-dsfr → Figma
+   Button → search 'Bouton'          | Card → search 'Carte'
+   Alert → search 'Alerte'           | Badge → search 'Badge'
+   Header → search 'En-tete'         | Footer → search 'Pied de page'
+   Breadcrumb → search 'Fil d Ariane' | Input → search 'Champ de saisie'
+   Table → search 'Tableau'          | Tag → search 'Tag'
+   Tabs → search 'Onglets'           | CallOut → search 'Mise en avant'
+   Accordion → search 'Accordeon'     | Pagination → search 'Pagination'
+   Select → search 'Liste deroulante' | RadioButtons → search 'Bouton radio'
+   Checkbox → search 'Case a cocher'  | ToggleSwitch → search 'Interrupteur'
+   Tile → search 'Tuile'             | SideMenu → search 'Menu lateral'
+   Stepper → search 'Indicateur d etapes' | Notice → search 'Bandeau d information'
+
+   ## FICHIER FIGMA
+   URL : [URL du fichier Figma]
+   Page cible : [Nom de la page]
+
+   ## METHODE
+   1. Lis le code React pour comprendre la structure de la page
+   2. search_design_system pour TOUS les composants DSFR utilises
+   3. Construis la page dans Figma section par section
+   4. get_screenshot pour verifier la fidelite avec le proto React
+
+   ## CHECKLIST OBLIGATOIRE
+   Avant de terminer, liste chaque element :
+   - Nom | INSTANCE BIBLIOTHEQUE ou MANUEL | Si MANUEL : justification
+   Si un element est MANUEL alors qu un composant DSFR existe, corrige-le."
+```
 
 ---
 

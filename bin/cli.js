@@ -17,11 +17,11 @@ if (command === '--version' || command === '-v') {
 // --help / -h
 if (command === '--help' || command === '-h' || !command) {
   console.log('');
-  console.log('\x1b[34m@timotheej/dsfr-toolkit\x1b[0m — Toolkit DSFR React pour Claude Code');
+  console.log('\x1b[34m@timotheej/dsfr-toolkit\x1b[0m — Toolkit DSFR pour Claude Code');
   console.log('');
   console.log('Commandes :');
-  console.log('  \x1b[36mcreate <nom-projet>\x1b[0m    Creer un nouveau projet DSFR React');
-  console.log('  \x1b[36mupdate\x1b[0m                 Mettre à jour les dépendances du projet courant');
+  console.log('  \x1b[36mcreate <nom-projet>\x1b[0m    Creer un nouveau projet DSFR');
+  console.log('  \x1b[36mupdate\x1b[0m                 Mettre a jour les dependances du projet courant');
   console.log('');
   console.log('Options :');
   console.log('  \x1b[36m--version, -v\x1b[0m          Afficher la version');
@@ -36,12 +36,13 @@ if (command === '--help' || command === '-h' || !command) {
 
 if (command === 'create') {
   const projectName = args[1];
-  if (!projectName) {
+  if (!projectName || projectName.startsWith('--')) {
     console.error('\x1b[31mErreur : nom du projet requis.\x1b[0m');
     console.error('');
     console.error('Usage : npx @timotheej/dsfr-toolkit create mon-projet');
     process.exit(1);
   }
+
   create(projectName);
 } else if (command === 'update') {
   update();
